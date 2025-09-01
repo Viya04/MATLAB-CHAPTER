@@ -1,0 +1,369 @@
+classdef app1 < matlab.apps.AppBase 
+ 
+    % Properties that correspond to app components 
+    properties (Access = public) 
+        UIFigure            matlab.ui.Figure 
+        VSBButton           matlab.ui.control.Button 
+        SSBSCButton         matlab.ui.control.Button 
+        DSBButton           matlab.ui.control.Button 
+        FMButton            matlab.ui.control.Button 
+        AMButton            matlab.ui.control.Button 
+        MODULATIONSLabel    matlab.ui.control.Label 
+        fcEditField         matlab.ui.control.NumericEditField 
+        fcEditFieldLabel    matlab.ui.control.Label 
+        vcEditField         matlab.ui.control.NumericEditField 
+        vcEditFieldLabel    matlab.ui.control.Label 
+        CARRIERSIGNALLabel  matlab.ui.control.Label 
+        fmEditField         matlab.ui.control.NumericEditField 
+        fmEditFieldLabel    matlab.ui.control.Label 
+        vmEditField         matlab.ui.control.NumericEditField 
+        vmEditFieldLabel    matlab.ui.control.Label 
+        MESSAGESIGNALLabel  matlab.ui.control.Label 
+        UIAxes3_2           matlab.ui.control.UIAxes 
+        UIAxes3             matlab.ui.control.UIAxes 
+        UIAxes2             matlab.ui.control.UIAxes 
+        UIAxes              matlab.ui.control.UIAxes 
+    end 
+ 
+    % Callbacks that handle component events 
+    methods (Access = private) 
+ 
+        % Button pushed function: AMButton 
+        function AMButtonPushed(app, event) 
+            fc = app.fcEditField.Value; 
+            vm = app.vmEditField.Value; 
+            fm = app.fmEditField.Value; 
+            vc = app.vcEditField.Value; 
+            % Time vector 
+            t = 0:0.001:1; % Adjust time vector as needed 
+            % Calculate AM modulation signal 
+            m = vm / vc; % Modulation index 
+            message_signal = vm*sin(2*pi*fm*t); 
+            carrier_signal = vc * sin(2*pi*fc*t); 
+            modulated_signal = vc * (1 + m * sin(2*pi*fm*t)) .* sin(2*pi*fc*t); 
+             
+            % Plot on UIAxes, UIAxes2, UIAxes3, UIAxes3_2 
+            plot(app.UIAxes, t, message_signal); 
+            title(app.UIAxes, 'Message Signal'); 
+            xlabel(app.UIAxes, 'Time'); 
+            ylabel(app.UIAxes, 'Amplitude'); 
+            plot(app.UIAxes2, t, carrier_signal); 
+            title(app.UIAxes2, 'Carrier Signal'); 
+            xlabel(app.UIAxes2, 'Time'); 
+            ylabel(app.UIAxes2, 'Amplitude'); 
+            plot(app.UIAxes3, t, modulated_signal); 
+            title(app.UIAxes3, 'AM Modulated Signal'); 
+            xlabel(app.UIAxes3, 'Time'); 
+            ylabel(app.UIAxes3, 'Amplitude'); 
+            plot(app.UIAxes3_2, t, fft(modulated_signal)); 
+            title(app.UIAxes3_2, 'AM In Spectral'); 
+            xlabel(app.UIAxes3_2, 'Time'); 
+            ylabel(app.UIAxes3_2, 'Amplitude'); 
+        end 
+ 
+        % Button pushed function: FMButton 
+        function FMButtonPushed(app, event) 
+            % Assuming you have the following values from your UI or elsewhere 
+            fc = app.fcEditField.Value; % Carrier frequency 
+            vc = app.vcEditField.Value; % Carrier amplitude 
+            fm = app.fmEditField.Value; % Modulating frequency 
+            vm = app.vmEditField.Value; % Modulating amplitude 
+            % Time vector 
+            t = 0:0.001:1; % Adjust time vector as needed 
+            % Calculate FM modulation signal 
+            % Modulation index beta 
+            beta =1; 
+            % Carrier signal 
+            carrier_signal = vc * sin(2*pi*fc*t); 
+            % Modulated signal (FM modulation) 
+            modulated_signal = vc * sin(2*pi*fc*t + beta * sin(2*pi*fm*t)); 
+            % Plot on UIAxes, UIAxes2, UIAxes3, UIAxes3_2 
+            plot(app.UIAxes, t, vm * sin(2*pi*fm*t)); 
+            title(app.UIAxes, 'Message Signal'); 
+            xlabel(app.UIAxes, 'Time'); 
+            ylabel(app.UIAxes, 'Amplitude'); 
+            plot(app.UIAxes2, t, carrier_signal); 
+            title(app.UIAxes2, 'Carrier Signal'); 
+            xlabel(app.UIAxes2, 'Time'); 
+            ylabel(app.UIAxes2, 'Amplitude'); 
+            plot(app.UIAxes3, t, modulated_signal); 
+            title(app.UIAxes3, 'FM Modulated Signal'); 
+            xlabel(app.UIAxes3, 'Time'); 
+            ylabel(app.UIAxes3, 'Amplitude'); 
+            plot(app.UIAxes3_2, t, fft(modulated_signal)); 
+            title(app.UIAxes3_2, 'FM In Spectral'); 
+            xlabel(app.UIAxes3_2, 'Time'); 
+            ylabel(app.UIAxes3_2, 'Amplitude'); 
+        end 
+ 
+        % Button pushed function: DSBButton 
+        function DSBButtonPushed(app, event) 
+            fc = app.fcEditField.Value; 
+            vm = app.vmEditField.Value; 
+            fm = app.fmEditField.Value; 
+            vc = app.vcEditField.Value; 
+            % Time vector 
+            t = 0:0.001:1; % Adjust time vector as needed 
+            % Calculate DSB-SC modulation signal 
+            message_signal = vm * sin(2*pi*fm*t); 
+            carrier_signal = vc * sin(2*pi*fc*t); 
+            modulated_signal = message_signal.*carrier_signal; 
+            % Plot on UIAxes, UIAxes2, UIAxes3, UIAxes3_2 
+            plot(app.UIAxes, t, message_signal); 
+            title(app.UIAxes, 'Message Signal'); 
+            xlabel(app.UIAxes, 'Time'); 
+            ylabel(app.UIAxes, 'Amplitude'); 
+            plot(app.UIAxes2, t, carrier_signal); 
+            title(app.UIAxes2, 'Carrier Signal'); 
+            xlabel(app.UIAxes2, 'Time'); 
+            ylabel(app.UIAxes2, 'Amplitude'); 
+            plot(app.UIAxes3, t, modulated_signal); 
+            title(app.UIAxes3, 'DSB-SC Modulated Signal'); 
+            xlabel(app.UIAxes3, 'Time'); 
+            ylabel(app.UIAxes3, 'Amplitude'); 
+            plot(app.UIAxes3_2, t, fft(modulated_signal)); 
+            title(app.UIAxes3_2, 'DSB-SC In Spectral'); 
+            xlabel(app.UIAxes3_2, 'Time'); 
+            ylabel(app.UIAxes3_2, 'Amplitude'); 
+        end 
+ 
+        % Button pushed function: SSBSCButton 
+        function SSBSCButtonPushed(app, event) 
+            fc = app.fcEditField.Value; 
+            vm = app.vmEditField.Value; 
+            fm = app.fmEditField.Value; 
+            vc = app.vcEditField.Value; 
+            v=(vm*vc)/2; 
+            % Time vector 
+            t = 0:0.001:1; % Adjust time vector as needed 
+            % Calculate SSB modulation signal 
+            message_signal = vm * cos(2*pi*fm*t); 
+            carrier_signal = vc * cos(2*pi*fc*t); 
+            modulated_signal =v.*((cos((2*pi)*fm*t)).*(cos(2*pi*fc*t)).*(sin(2*pi*fm*t).*sin(2*pi*fc*t))); 
+            % Plot on UIAxes, UIAxes2, UIAxes3, UIAxes3_2 
+            plot(app.UIAxes, t, message_signal); 
+            title(app.UIAxes, 'Message Signal'); 
+            xlabel(app.UIAxes, 'Time'); 
+            ylabel(app.UIAxes, 'Amplitude'); 
+            plot(app.UIAxes2, t, carrier_signal); 
+            title(app.UIAxes2, 'Carrier Signal'); 
+            xlabel(app.UIAxes2, 'Time'); 
+            ylabel(app.UIAxes2, 'Amplitude'); 
+            plot(app.UIAxes3, t, modulated_signal); 
+            title(app.UIAxes3, 'SSB Modulated Signal'); 
+            xlabel(app.UIAxes3, 'Time'); 
+            ylabel(app.UIAxes3, 'Amplitude'); 
+            plot(app.UIAxes3_2, t, fft(modulated_signal)); 
+            title(app.UIAxes3_2, 'SSB-SC In Spectral'); 
+            xlabel(app.UIAxes3_2, 'Time'); 
+            ylabel(app.UIAxes3_2, 'Amplitude'); 
+        end 
+ 
+        % Callback function: not associated with a component 
+        function PAMButtonPushed(app, event) 
+             
+        end 
+ 
+        % Callback function: not associated with a component 
+        function PWMButtonPushed(app, event) 
+            
+        end 
+ 
+        % Button pushed function: VSBButton 
+        function VSBButtonPushed(app, event) 
+            % Parameters 
+            Fs = 1000;  % Sampling frequency (Hz) 
+            fc = app.fcEditField.Value;   % Carrier frequency (Hz), fetched from GUI 
+            fm = app.fmEditField.Value;   % Modulation frequency (Hz), fetched from GUI 
+            % Time vector 
+            t = 0:1/Fs:1;  % Adjust time vector as needed 
+            % Generate message signal (baseband) 
+            message_signal = cos(2*pi*10*t) + cos(2*pi*20*t); 
+            % Generate carrier signal 
+            carrier_signal = cos(2*pi*fc*t); 
+            % SSB Modulation 
+            S = message_signal .* carrier_signal;  % Amplitude modulation (AM) 
+            S_vsb = ssbmod(message_signal, fc, Fs, 0);  % Single Sideband modulation 
+            % Adding Vestigial Sideband (VSB) 
+            vestigial = 0.5 * S;  % Example of adding a vestigial component 
+            S_vsb_vestigial = S_vsb + vestigial; 
+            % Plot on UIAxes, UIAxes2, UIAxes3, UIAxes3_2 
+            plot(app.UIAxes, t, message_signal); 
+            title(app.UIAxes, 'Message Signal'); 
+            xlabel(app.UIAxes, 'Time'); 
+            ylabel(app.UIAxes, 'Amplitude'); 
+            plot(app.UIAxes2, t, carrier_signal); 
+            title(app.UIAxes2, 'Carrier Signal'); 
+            xlabel(app.UIAxes2, 'Time'); 
+            ylabel(app.UIAxes2, 'Amplitude'); 
+            plot(app.UIAxes3, t, S_vsb_vestigial); 
+            title(app.UIAxes3, 'VSB Modulated Signal'); 
+            xlabel(app.UIAxes3, 'Time'); 
+            ylabel(app.UIAxes3, 'Amplitude'); 
+            plot(app.UIAxes3_2, t, fft(S_vsb_vestigial)); 
+            title(app.UIAxes3_2, 'VSB In Spectral'); 
+            xlabel(app.UIAxes3_2, 'Time'); 
+            ylabel(app.UIAxes3_2, 'Amplitude'); 
+        end 
+    end 
+ 
+    % Component initialization 
+    methods (Access = private) 
+ 
+        % Create UIFigure and components 
+        function createComponents(app) 
+ 
+            % Create UIFigure and hide until all components are created 
+            app.UIFigure = uifigure('Visible', 'off'); 
+            app.UIFigure.Color = [0.9882 0.6706 0.4078]; 
+            app.UIFigure.Position = [100 100 652 518]; 
+            app.UIFigure.Name = 'MATLAB App'; 
+ 
+            % Create UIAxes 
+            app.UIAxes = uiaxes(app.UIFigure); 
+            title(app.UIAxes, 'Title') 
+            xlabel(app.UIAxes, 'X') 
+            ylabel(app.UIAxes, 'Y') 
+            zlabel(app.UIAxes, 'Z') 
+            app.UIAxes.Position = [14 316 300 185]; 
+ 
+            % Create UIAxes2 
+            app.UIAxes2 = uiaxes(app.UIFigure); 
+            title(app.UIAxes2, 'Title') 
+            xlabel(app.UIAxes2, 'X') 
+            ylabel(app.UIAxes2, 'Y') 
+            zlabel(app.UIAxes2, 'Z') 
+            app.UIAxes2.Position = [326 316 300 185]; 
+ 
+            % Create UIAxes3 
+            app.UIAxes3 = uiaxes(app.UIFigure); 
+            title(app.UIAxes3, 'Title') 
+            xlabel(app.UIAxes3, 'X') 
+            ylabel(app.UIAxes3, 'Y') 
+            zlabel(app.UIAxes3, 'Z') 
+            app.UIAxes3.Position = [14 103 300 185]; 
+ 
+            % Create UIAxes3_2 
+            app.UIAxes3_2 = uiaxes(app.UIFigure); 
+            title(app.UIAxes3_2, 'Title') 
+            xlabel(app.UIAxes3_2, 'X') 
+            ylabel(app.UIAxes3_2, 'Y') 
+            zlabel(app.UIAxes3_2, 'Z') 
+            app.UIAxes3_2.Position = [327 105 300 185]; 
+ 
+            % Create MESSAGESIGNALLabel 
+            app.MESSAGESIGNALLabel = uilabel(app.UIFigure); 
+            app.MESSAGESIGNALLabel.Position = [28 83 112 22]; 
+            app.MESSAGESIGNALLabel.Text = 'MESSAGE SIGNAL'; 
+ 
+            % Create vmEditFieldLabel 
+            app.vmEditFieldLabel = uilabel(app.UIFigure); 
+            app.vmEditFieldLabel.HorizontalAlignment = 'right'; 
+            app.vmEditFieldLabel.Position = [22 52 25 22]; 
+            app.vmEditFieldLabel.Text = 'vm'; 
+ 
+            % Create vmEditField 
+            app.vmEditField = uieditfield(app.UIFigure, 'numeric'); 
+            app.vmEditField.Position = [62 52 78 22]; 
+ 
+            % Create fmEditFieldLabel 
+            app.fmEditFieldLabel = uilabel(app.UIFigure); 
+            app.fmEditFieldLabel.HorizontalAlignment = 'right'; 
+            app.fmEditFieldLabel.Position = [22 20 25 22]; 
+            app.fmEditFieldLabel.Text = 'fm'; 
+ 
+            % Create fmEditField 
+            app.fmEditField = uieditfield(app.UIFigure, 'numeric'); 
+            app.fmEditField.Position = [62 20 78 22]; 
+ 
+            % Create CARRIERSIGNALLabel 
+            app.CARRIERSIGNALLabel = uilabel(app.UIFigure); 
+            app.CARRIERSIGNALLabel.Position = [208 83 106 22]; 
+            app.CARRIERSIGNALLabel.Text = 'CARRIER SIGNAL'; 
+ 
+            % Create vcEditFieldLabel 
+            app.vcEditFieldLabel = uilabel(app.UIFigure); 
+            app.vcEditFieldLabel.HorizontalAlignment = 'right'; 
+            app.vcEditFieldLabel.Position = [202 53 25 22]; 
+            app.vcEditFieldLabel.Text = 'vc'; 
+ 
+            % Create vcEditField 
+            app.vcEditField = uieditfield(app.UIFigure, 'numeric'); 
+            app.vcEditField.Position = [242 53 78 22]; 
+ 
+            % Create fcEditFieldLabel 
+            app.fcEditFieldLabel = uilabel(app.UIFigure); 
+            app.fcEditFieldLabel.HorizontalAlignment = 'right'; 
+            app.fcEditFieldLabel.Position = [202 10 25 22]; 
+            app.fcEditFieldLabel.Text = 'fc'; 
+ 
+            % Create fcEditField 
+            app.fcEditField = uieditfield(app.UIFigure, 'numeric'); 
+            app.fcEditField.Position = [242 10 78 22]; 
+ 
+            % Create MODULATIONSLabel 
+            app.MODULATIONSLabel = uilabel(app.UIFigure); 
+            app.MODULATIONSLabel.Position = [467 63 92 22]; 
+            app.MODULATIONSLabel.Text = 'MODULATIONS'; 
+ 
+            % Create AMButton 
+            app.AMButton = uibutton(app.UIFigure, 'push'); 
+            app.AMButton.ButtonPushedFcn = createCallbackFcn(app, @AMButtonPushed, true); 
+            app.AMButton.Position = [384 32 58 22]; 
+            app.AMButton.Text = 'AM'; 
+ 
+            % Create FMButton 
+            app.FMButton = uibutton(app.UIFigure, 'push'); 
+            app.FMButton.ButtonPushedFcn = createCallbackFcn(app, @FMButtonPushed, true); 
+            app.FMButton.Position = [467 31 58 22]; 
+            app.FMButton.Text = 'FM'; 
+ 
+            % Create DSBButton 
+            app.DSBButton = uibutton(app.UIFigure, 'push'); 
+            app.DSBButton.ButtonPushedFcn = createCallbackFcn(app, @DSBButtonPushed, true); 
+            app.DSBButton.Position = [550 33 58 22]; 
+            app.DSBButton.Text = 'DSB'; 
+ 
+            % Create SSBSCButton 
+            app.SSBSCButton = uibutton(app.UIFigure, 'push'); 
+            app.SSBSCButton.ButtonPushedFcn = createCallbackFcn(app, @SSBSCButtonPushed, 
+true); 
+            app.SSBSCButton.Position = [441 -1 59 22]; 
+            app.SSBSCButton.Text = 'SSB-SC'; 
+ 
+            % Create VSBButton 
+            app.VSBButton = uibutton(app.UIFigure, 'push'); 
+            app.VSBButton.ButtonPushedFcn = createCallbackFcn(app, @VSBButtonPushed, true); 
+            app.VSBButton.Position = [524 -3 47 22]; 
+            app.VSBButton.Text = 'VSB'; 
+ 
+            % Show the figure after all components are created 
+            app.UIFigure.Visible = 'on'; 
+        end 
+    end 
+ 
+    % App creation and deletion 
+    methods (Access = public) 
+ 
+        % Construct app 
+        function app = app1 
+ 
+            % Create UIFigure and components 
+            createComponents(app) 
+ 
+            % Register the app with App Designer 
+            registerApp(app, app.UIFigure) 
+ 
+            if nargout == 0 
+                clear app 
+            end 
+        end 
+ 
+        % Code that executes before app deletion 
+        function delete(app) 
+ 
+            % Delete UIFigure when app is deleted 
+            delete(app.UIFigure) 
+        end 
+    end 
+end 
